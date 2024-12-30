@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
 
-  const fetchEmployees = () => {
+  useEffect(() => {
     axios.get('/api/employees')
       .then((response) => {
         setEmployees(response.data);
@@ -13,44 +13,44 @@ const EmployeeList = () => {
       .catch((error) => {
         console.error('Error fetching employees:', error);
       });
-  };
-
-  useEffect(() => {
-    // Fetch employees when the component mounts
-    fetchEmployees();
   }, []);
-
-  const handleDelete = (id) => {
-    axios.delete(`/api/employees/${id}`)
-      .then(() => {
-        // Refetch the list after deletion
-        fetchEmployees();
-      })
-      .catch((error) => {
-        console.error('Error deleting employee:', error);
-      });
-  };
 
   return (
     <div>
-      <h2>Employee List</h2>
-      <Link to="/employee-form">
-        <button>Create New Employee</button>
-      </Link>
-      <ul>
+      <h2 className="text-center mb-4">Employee List</h2>
+      <div className="row">
         {employees.map((employee) => (
-          <li key={employee._id}>
-            {employee.name} - ${employee.salary}
-            <Link to={`/employee-details/${employee._id}`}>
-              <button>Details</button>
-            </Link>
-            <Link to={`/employee-form/${employee._id}`}>
-              <button>Edit</button>
-            </Link>
-            <button onClick={() => handleDelete(employee._id)}>Delete</button>
-          </li>
+          <div className="col-md-4 mb-4" key={employee._id}>
+            <div className="card shadow-sm">
+              <div className="card-body">
+                <h5 className="card-title">{employee.name}</h5>
+                <p className="card-text">Salary: ${employee.salary}</p>
+                <p className="card-text">Phone: {employee.phone}</p>
+                <div className="d-flex justify-content-between">
+                  <Link to={`/employee-details/${employee._id}`} className="btn btn-primary btn-sm">
+                    Details
+                  </Link>
+                  <Link to={`/employee-form/${employee._id}`} className="btn btn-warning btn-sm">
+                    Edit
+                  </Link>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => {
+                      axios.delete(`/api/employees/${employee._id}`)
+                        .then(() => {
+                          setEmployees(employees.filter(emp => emp._id !== employee._id));
+                        })
+                        .catch(error => console.error('Error deleting employee:', error));
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

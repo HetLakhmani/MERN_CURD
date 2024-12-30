@@ -29,71 +29,63 @@ const EmployeeForm = () => {
     e.preventDefault();
 
     if (id) {
-      // Update an employee
       axios.put(`/api/employees/${id}`, formData)
-        .then(() => {
-          navigate('/'); // Redirect to the employee list
-        })
-        .catch((error) => {
-          console.error('Error updating employee:', error);
-        });
+        .then(() => navigate('/'))
+        .catch((error) => console.error('Error updating employee:', error));
     } else {
-      // Create a new employee
       axios.post('/api/employees', formData)
-        .then(() => {
-          navigate('/'); // Redirect to the employee list
-        })
-        .catch((error) => {
-          console.error('Error creating employee:', error);
-        });
+        .then(() => navigate('/'))
+        .catch((error) => console.error('Error creating employee:', error));
     }
   };
 
   return (
     <div>
-      <h2>{id ? 'Edit Employee' : 'Create Employee'}</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
+      <h2 className="text-center mb-4">{id ? 'Edit Employee' : 'Add Employee'}</h2>
+      <form onSubmit={handleSubmit} className="border p-4 shadow-sm rounded">
+        <div className="mb-3">
+          <label className="form-label">Name</label>
           <input
             type="text"
+            className="form-control"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
           />
-        </label>
-        <br />
-        <label>
-          Email:
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Email</label>
           <input
             type="email"
+            className="form-control"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
           />
-        </label>
-        <br />
-        <label>
-          Phone:
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Phone</label>
           <input
             type="text"
+            className="form-control"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
           />
-        </label>
-        <br />
-        <label>
-          Salary:
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Salary</label>
           <input
             type="number"
+            className="form-control"
             value={formData.salary}
             onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
             required
           />
-        </label>
-        <br />
-        <button type="submit">{id ? 'Update' : 'Create'}</button>
+        </div>
+        <button type="submit" className="btn btn-success">
+          {id ? 'Update Employee' : 'Add Employee'}
+        </button>
       </form>
     </div>
   );

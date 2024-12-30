@@ -1,42 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const EmployeeDetails = () => {
-  const { id } = useParams(); // Get employee ID from the URL
-  const [employee, setEmployee] = useState(null);
+  const { id } = useParams(); // Get the employee ID from the URL
+  const navigate = useNavigate();
+
+  const [employee, setEmployee] = useState(null); // To store employee details
+  const [loading, setLoading] = useState(true); // To manage loading state
+  const [error, setError] = useState(null); // To handle errors
 
   useEffect(() => {
-    // Fetch employee details
+    // Fetch employee details from the backend
     axios.get(`/api/employees/${id}`)
-      .then(response => {
-        setEmployee(response.data.employee);
+      .then((response) => {
+        setEmployee(response.data); // Set employee details
+        setLoading(false); // Disable loading
       })
-      .catch(error => {
-        console.error('Error fetching employee details:', error);
+      .catch((err) => {
+        setError(err.message); // Set error message
+        setLoading(false); // Disable loading
       });
   }, [id]);
 
-  const handleIncrementSalary = () => {
-    axios.patch(`/api/employees/${id}/increment`)
-      .then(response => {
-        setEmployee(response.data);
-      })
-      .catch(error => {
-        console.error('Error incrementing salary:', error);
-      });
-  };
+  if (loading) return <p>Loading...</p>; // Show loading spinner or message
+  if (error) return <p>Error: {error}</p>; // Show error message if any
 
-  if (!employee) return <p>Loading...</p>;
-
+  // Render employee details
   return (
-    <div>
+    <div className="container">
       <h2>Employee Details</h2>
-      <p>Name: {employee.name}</p>
-      <p>Email: {employee.email}</p>
-      <p>Phone: {employee.phone}</p>
-      <p>Salary: ${employee.salary}</p>
-      <button onClick={handleIncrementSalary}>Increment Salary</button>
+      {employee ? (
+        <div className="card shadow-sm p-4">
+          <h5 className="card-title">Name: {employee.name}</h5>
+          <p className="card-text">Email: {employee.email}</p>
+          <p className="card-text">Phone: {employee.phone}</p>
+          <p className="card-text">Salary: ${employee.salary}</p>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/')}
+          >
+            Back to List
+          </button>
+        </div>
+      ) : (
+        <p>No employee details found!</p>
+      )}
     </div>
   );
 };

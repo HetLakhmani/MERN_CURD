@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import EmployeeList from './components/EmployeeList';
 import EmployeeForm from './components/EmployeeForm';
 import EmployeeDetails from './components/EmployeeDetails';
@@ -7,18 +7,38 @@ import EmployeeDetails from './components/EmployeeDetails';
 function App() {
   return (
     <Router>
-      <div className="App">
-        <h1>Employee Management System</h1>
-        <Routes>
-          {/* Home route to list employees */}
-          <Route path="/" element={<EmployeeList />} />
+      <div>
+        {/* Navbar */}
+        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+          <div className="container">
+            <Link className="navbar-brand" to="/">
+              Employee Management
+            </Link>
+            <div className="collapse navbar-collapse">
+              <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
+                    Home
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/employee-form">
+                    Add Employee
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
 
-          {/* Route to create or edit an employee */}
-          <Route path="/employee-form/:id?" element={<EmployeeForm />} />
-
-          {/* Route to view employee details */}
-          <Route path="/employee-details/:id" element={<EmployeeDetails />} />
-        </Routes>
+        {/* Main Content */}
+        <div className="container mt-4">
+          <Routes>
+            <Route path="/" element={<EmployeeList />} />
+            <Route path="/employee-form/:id?" element={<EmployeeForm />} />
+            <Route path="/employee-details/:id" element={<EmployeeDetails />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
